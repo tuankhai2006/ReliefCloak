@@ -19,8 +19,14 @@ const LINKS: { href: string; key: CommonKey; show: (has: (r: string) => boolean,
   { href: '/governance', key: 'navGovernance', show: (has) => has('tide-realm-admin') },
 ]
 
-// Bảng tin cũ (trước khi có chiến dịch). Các trang claim cũ đã bị bỏ khỏi luồng chính (A9).
-const LEGACY = [{ href: '/posts', label: 'Posts' }]
+// Nhãn vai trò hiển thị cạnh tên tài khoản demo, theo ngôn ngữ đang chọn.
+const ROLE_LABEL: [string, CommonKey][] = [
+  ['org_admin', 'roleOrgAdmin'],
+  ['auditor', 'roleAuditor'],
+  ['disburser', 'roleOfficer'],
+  ['appUser', 'roleResident'],
+  ['tide-realm-admin', 'roleRealmAdmin'],
+]
 
 export default function NavBar() {
   const { user, login, logout, hasRole, mockUsers, switchMockUser } = useTide()
@@ -52,16 +58,6 @@ export default function NavBar() {
               {t(l.key)}
             </Link>
           ))}
-          <details className="relative">
-            <summary className="cursor-pointer list-none rounded-lg px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100">{t('navLegacy')} ▾</summary>
-            <div className="absolute left-0 mt-1 w-44 rounded-lg border border-slate-200 bg-white p-1 shadow-lg">
-              {LEGACY.map((l) => (
-                <Link key={l.href} href={l.href} className="block rounded px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100">
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </details>
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -88,17 +84,17 @@ export default function NavBar() {
                 {t(l.key)}
               </Link>
             ))}
-            {LEGACY.map((l) => (
-              <Link key={l.href} href={l.href} className="rounded-lg px-2 py-1.5 text-sm text-slate-500 hover:bg-slate-100">
-                {t('navLegacy')}: {l.label}
-              </Link>
-            ))}
           </nav>
           {account()}
         </div>
       )}
     </header>
   )
+
+  function roleLabel(roles: string[]) {
+    const found = ROLE_LABEL.find(([r]) => roles.includes(r))
+    return t(found ? found[1] : 'roleNone')
+  }
 
   function account() {
     if (MOCK && mockUsers && switchMockUser)
@@ -113,7 +109,7 @@ export default function NavBar() {
             <option value="">{t('pickRole')}</option>
             {mockUsers.map((u) => (
               <option key={u.id} value={u.id}>
-                {u.name}
+                {u.name} · {roleLabel(u.roles)}
               </option>
             ))}
           </select>

@@ -67,13 +67,13 @@ function seedUsers(): SimUser[] {
     id, username, name, realmRoles, clientRoles: admin ? { [ADMIN_CLIENT]: [REALM_ADMIN_ROLE] } : {},
   })
   return [
-    u('resident-1', 'an', 'An (Người dân)', ['appUser']),
-    u('resident-2', 'binh', 'Bình (Người dân)', ['appUser']),
-    u('org-1', 'minh', 'Minh (Chủ quỹ)', ['org_admin'], true),
-    u('aud-1', 'ha', 'Hà (Auditor)', ['auditor'], true),
-    u('gov-1', 'quang', 'Quang (Realm admin)', [], true),
-    u('off-1', 'tuan', 'Tuấn (Officer)', ['disburser']),
-    u('off-2', 'long', 'Long (New officer)', []),
+    u('resident-1', 'an', 'An', ['appUser']),
+    u('resident-2', 'binh', 'Bình', ['appUser']),
+    u('org-1', 'minh', 'Minh', ['org_admin'], true),
+    u('aud-1', 'ha', 'Hà', ['auditor'], true),
+    u('gov-1', 'quang', 'Quang', [], true),
+    u('off-1', 'tuan', 'Tuấn', ['disburser']),
+    u('off-2', 'long', 'Long', []),
   ]
 }
 

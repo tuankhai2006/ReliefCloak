@@ -8,7 +8,7 @@ import { NEEDS, PUBLIC_IMAGES, URGENCIES, type Need } from '@/models/publicImage
 function text(body: unknown, key: string, max: number): string {
   const value = body && typeof body === 'object' ? (body as Record<string, unknown>)[key] : undefined
   if (typeof value !== 'string' || !value.trim() || value.trim().length > max)
-    throw new ServiceError(400, `${key}: cần nhập từ 1 đến ${max} ký tự`)
+    throw new ServiceError(400, `INVALID_${key}`)
   return value.trim()
 }
 export function reportsFor(user: SessionUser) {
@@ -44,12 +44,12 @@ export function submitReport(user: SessionUser, body: unknown) {
 }
 export function publicPosts() { return readRelief().posts }
 export function publishPost(user: SessionUser, body: unknown) {
-  if (!user.roles.includes('org_admin')) throw new ServiceError(403, 'Chỉ admin được đăng bài')
+  if (!user.roles.includes('org_admin')) throw new ServiceError(403, 'FORBIDDEN')
   const reportId = text(body, 'reportId', 100)
   return mutateRelief(store => {
   const report = store.reports.find(r => r.id === reportId)
-  if (!report) throw new ServiceError(404, 'Không tìm thấy report')
-  if (store.posts.some(p => p.reportId === reportId)) throw new ServiceError(409, 'Report đã có bài đăng')
+  if (!report) throw new ServiceError(404, 'REPORT_NOT_FOUND')
+  if (store.posts.some(p => p.reportId === reportId)) throw new ServiceError(409, 'POST_EXISTS')
   const post: CommunityPost = {
     id: randomUUID(), reportId, title: text(body, 'title', 160), content: text(body, 'content', 5000),
     region: report.region, publishedAt: new Date().toISOString(),

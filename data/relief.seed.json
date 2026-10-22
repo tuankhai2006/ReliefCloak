@@ -1,9 +1,9 @@
 {
   "version": 1,
   "reports": [
-    { "id": "report-hue", "region": "Hương Trà, Huế", "description": "Dữ liệu giả: 24 hộ cần nước sạch và thực phẩm sau ngập. Không chứa thông tin cá nhân thật.", "createdBy": "resident-1", "createdAt": "2026-10-22T02:00:00.000Z", "status": "ACCEPTED", "feedback": "Đã kiểm tra hồ sơ mẫu; có thể lập chiến dịch.", "reviewedBy": "org-1", "urgency": "URGENT" },
-    { "id": "report-quangtri", "region": "Hải Lăng, Quảng Trị", "description": "Dữ liệu giả: điểm sơ tán cần bộ vệ sinh và chăn cho 18 hộ.", "createdBy": "resident-2", "createdAt": "2026-10-22T03:30:00.000Z", "status": "NEW", "urgency": "URGENT" },
-    { "id": "report-quangnam", "region": "Đại Lộc, Quảng Nam", "description": "Dữ liệu giả: cần thực phẩm khô cho 12 hộ đang ở điểm sơ tán.", "createdBy": "resident-1", "createdAt": "2026-10-22T04:00:00.000Z", "status": "VERIFYING", "feedback": "Đang kiểm tra nhu cầu mẫu.", "urgency": "STANDARD" }
+    { "id": "report-hue", "region": "Hương Trà, Huế", "description": "Dữ liệu giả: 24 hộ cần nước sạch và thực phẩm sau ngập. Không chứa thông tin cá nhân thật. / Synthetic: 24 households need clean water and food after the flood. No real personal data.", "createdBy": "resident-1", "createdAt": "2026-10-22T02:00:00.000Z", "status": "ACCEPTED", "feedback": "Đã kiểm tra hồ sơ mẫu; có thể lập chiến dịch. / Sample record checked; ready for a campaign.", "reviewedBy": "org-1", "urgency": "URGENT" },
+    { "id": "report-quangtri", "region": "Hải Lăng, Quảng Trị", "description": "Dữ liệu giả: điểm sơ tán cần bộ vệ sinh và chăn cho 18 hộ. / Synthetic: evacuation point needs hygiene kits and blankets for 18 households.", "createdBy": "resident-2", "createdAt": "2026-10-22T03:30:00.000Z", "status": "NEW", "urgency": "URGENT" },
+    { "id": "report-quangnam", "region": "Đại Lộc, Quảng Nam", "description": "Dữ liệu giả: cần thực phẩm khô cho 12 hộ đang ở điểm sơ tán. / Synthetic: dry food needed for 12 households at an evacuation point.", "createdBy": "resident-1", "createdAt": "2026-10-22T04:00:00.000Z", "status": "VERIFYING", "feedback": "Đang kiểm tra nhu cầu mẫu. / Checking the sample needs.", "urgency": "STANDARD" }
   ],
   "posts": [],
   "campaigns": [
@@ -17,6 +17,6 @@
     { "id": "payout-seed-1", "campaignId": "campaign-hue", "amountVnd": 3000000, "purpose": "Nước uống đóng chai / Bottled drinking water (demo)", "recipient": "Điểm hỗ trợ A — người nhận giả lập / Demo recipient A", "proposedBy": "org-1", "proposedAt": "2026-10-22T04:00:00.000Z", "status": "PENDING_AUDIT" }
   ],
   "audit": [
-    { "id": "event-seed-1", "actorId": "org-1", "actorName": "Minh (Chủ quỹ)", "action": "PAYOUT_PROPOSED", "objectId": "payout-seed-1", "at": "2026-10-22T04:00:00.000Z" }
+    { "id": "event-seed-1", "actorId": "org-1", "actorName": "Minh", "action": "PAYOUT_PROPOSED", "objectId": "payout-seed-1", "at": "2026-10-22T04:00:00.000Z" }
   ]
 }

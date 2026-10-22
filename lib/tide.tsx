@@ -33,7 +33,7 @@ const Ctx = createContext<TideApi | null>(null)
 
 export function useTide(): TideApi {
   const api = useContext(Ctx)
-  if (!api) throw new Error('useTide phải nằm trong <TideProvider>')
+  if (!api) throw new Error('useTide must be used inside <TideProvider>')
   return api
 }
 
@@ -100,14 +100,14 @@ export function mockEncrypt(plain: string): string {
 
 export function mockDecrypt(cipher: string): string {
   const m = /^MOCK:([A-Za-z0-9+/=]+)\.([0-9a-f]+)$/.exec(cipher)
-  if (!m) throw new Error('Ciphertext không hợp lệ: không phải dữ liệu do Field Worker mã hóa')
+  if (!m) throw new Error('Invalid ciphertext: not encrypted by a field worker')
   let plain: string
   try {
     plain = b64decode(m[1])
   } catch {
-    throw new Error('Ciphertext bị chỉnh sửa, giải mã thất bại')
+    throw new Error('Ciphertext was modified; decryption failed')
   }
-  if (checksum(plain) !== m[2]) throw new Error('Ciphertext bị chỉnh sửa, giải mã thất bại')
+  if (checksum(plain) !== m[2]) throw new Error('Ciphertext was modified; decryption failed')
   return plain
 }
 
@@ -189,11 +189,11 @@ function SimulatedTideBridge({ children }: { children: ReactNode }) {
     logout: () => save(null),
     hasRole,
     encryptField: async (plain) => {
-      if (!hasRole(`_tide_${PAYOUT_TAG}.selfencrypt`)) throw new Error('Không có quyền mã hóa')
+      if (!hasRole(`_tide_${PAYOUT_TAG}.selfencrypt`)) throw new Error('Not allowed to encrypt')
       return mockEncrypt(plain)
     },
     decryptField: async (cipher) => {
-      if (!hasRole(`_tide_${PAYOUT_TAG}.selfdecrypt`)) throw new Error('Không có quyền giải mã')
+      if (!hasRole(`_tide_${PAYOUT_TAG}.selfdecrypt`)) throw new Error('Not allowed to decrypt')
       return mockDecrypt(cipher)
     },
     authFetch: async (url, init = {}) => {
