@@ -16,6 +16,7 @@ const LINKS: { href: string; key: CommonKey; show: (has: (r: string) => boolean,
   { href: '/reports', key: 'navReport', show: (has, signedIn) => !signedIn || has('appUser') },
   { href: '/me', key: 'navDashboard', show: (has) => has('appUser') },
   { href: '/admin', key: 'navAdmin', show: (has) => INTERNAL.some(has) },
+  { href: '/governance', key: 'navGovernance', show: (has) => has('tide-realm-admin') },
 ]
 
 // Bảng tin cũ (trước khi có chiến dịch). Các trang claim cũ đã bị bỏ khỏi luồng chính (A9).

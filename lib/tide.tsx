@@ -5,7 +5,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { TideCloakProvider, useTideCloak } from '@tidecloak/nextjs'
 import tcConfig from '../tidecloak.json'
-import { DEMO_USERS } from './demoUsers'
 
 export const MOCK = process.env.NEXT_PUBLIC_TIDE_MOCK === 'true'
 export const PAYOUT_TAG = 'payout'
@@ -39,7 +38,7 @@ export function useTide(): TideApi {
 }
 
 export function TideProvider({ children }: { children: ReactNode }) {
-  if (MOCK) return <MockBridge>{children}</MockBridge>
+  if (MOCK) return <SimulatedTideBridge>{children}</SimulatedTideBridge>
   return (
     <TideCloakProvider config={tcConfig}>
       <RealBridge>{children}</RealBridge>
@@ -58,7 +57,7 @@ function RealBridge({ children }: { children: ReactNode }) {
     return {
       id: payload.vuid ?? payload.sub,
       name: payload.preferred_username ?? 'unknown',
-      roles: payload.realm_access?.roles ?? [],
+      roles: [...(payload.realm_access?.roles ?? []), ...Object.values(payload.resource_access ?? {}).flatMap((c: any) => c.roles ?? [])],
     }
   }, [tc.authenticated, tc.token])
 
@@ -67,7 +66,8 @@ function RealBridge({ children }: { children: ReactNode }) {
     user,
     login: () => tc.login(),
     logout: () => tc.logout(),
-    hasRole: (r) => tc.hasRealmRole(r),
+    // tide-realm-admin is a client role on realm-management, not a realm role.
+    hasRole: (r) => tc.hasRealmRole(r) || tc.hasClientRole(r, 'realm-management'),
     encryptField: async (plain) => (await tc.doEncrypt([{ data: plain, tags: [PAYOUT_TAG] }]))[0] as string,
     // TODO(Người 1): selfdecrypt chỉ mở được dữ liệu do CHÍNH user đó mã hóa.
     // Để Officer mở dữ liệu của Field Worker sau khi Chủ quỹ + Auditor duyệt, cần
@@ -84,8 +84,6 @@ function RealBridge({ children }: { children: ReactNode }) {
 }
 
 // ───────────────────────── Mock ─────────────────────────
-
-const MOCK_USERS: TideUser[] = DEMO_USERS
 
 // Checksum đơn giản để mô phỏng việc ciphertext bị sửa thì giải mã thất bại.
 function checksum(s: string): string {
@@ -113,32 +111,82 @@ export function mockDecrypt(cipher: string): string {
   return plain
 }
 
-function MockBridge({ children }: { children: ReactNode }) {
-  const [userId, setUserId] = useState<string | null>(null)
+// SIMULATED TideCloak sign-in (mock mode). Picking a demo account stands in for the Tide enclave
+// login; the server (lib/simTide.ts) returns an EdDSA-signed token with Tide-shaped claims and every
+// API verifies it. Roles come only from the signed token, so changing them needs the IGA flow.
+const SESSION_KEY = 'sim-tide-session'
+
+interface SimSession {
+  userId: string
+  token: string
+  exp: number
+}
+
+function claimsOf(token: string): Record<string, any> {
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))))
+}
+
+async function simLogin(userId: string): Promise<SimSession> {
+  const res = await fetch('/api/sim-tide/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) })
+  if (!res.ok) throw new Error('SIM_LOGIN_FAILED')
+  const { accessToken } = await res.json()
+  return { userId, token: accessToken, exp: claimsOf(accessToken).exp }
+}
+
+function SimulatedTideBridge({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<SimSession | null>(null)
+  const [accounts, setAccounts] = useState<TideUser[]>([])
   const [ready, setReady] = useState(false)
 
+  const save = useCallback((next: SimSession | null) => {
+    setSession(next)
+    try {
+      next ? localStorage.setItem(SESSION_KEY, JSON.stringify(next)) : localStorage.removeItem(SESSION_KEY)
+    } catch {}
+  }, [])
+
   useEffect(() => {
+    fetch('/api/sim-tide/login').then((r) => r.json()).then(setAccounts).catch(() => setAccounts([]))
+    let stored: SimSession | null = null
     try {
-      setUserId(localStorage.getItem('mock-user'))
+      stored = JSON.parse(localStorage.getItem(SESSION_KEY) ?? 'null')
     } catch {}
-    setReady(true)
-  }, [])
+    // Expired session: sign in again silently, like Tide's silent SSO refresh.
+    if (stored && stored.exp * 1000 < Date.now() + 30_000) simLogin(stored.userId).then(save, () => save(null)).finally(() => setReady(true))
+    else {
+      setSession(stored)
+      setReady(true)
+    }
+  }, [save])
 
-  const switchMockUser = useCallback((id: string | null) => {
-    setUserId(id)
-    try {
-      id ? localStorage.setItem('mock-user', id) : localStorage.removeItem('mock-user')
-    } catch {}
-  }, [])
+  const switchMockUser = useCallback(
+    (id: string | null) => {
+      if (!id) return save(null)
+      simLogin(id).then(save, () => save(null))
+    },
+    [save],
+  )
 
-  const user = MOCK_USERS.find((u) => u.id === userId) ?? null
-  const hasRole = (r: string) => !!user?.roles.includes(r)
+  const claims = session ? claimsOf(session.token) : null
+  const roles: string[] = claims
+    ? [...(claims.realm_access?.roles ?? []), ...Object.values(claims.resource_access ?? {}).flatMap((c: any) => c.roles ?? [])]
+    : []
+  const user: TideUser | null = claims ? { id: claims.vuid, name: claims.name ?? claims.preferred_username, roles } : null
+  const hasRole = (r: string) => roles.includes(r)
+
+  const freshToken = async () => {
+    if (!session) return null
+    if (session.exp * 1000 > Date.now() + 30_000) return session.token
+    const next = await simLogin(session.userId)
+    save(next)
+    return next.token
+  }
 
   const api: TideApi = {
     ready,
     user,
     login: () => {},
-    logout: () => switchMockUser(null),
+    logout: () => save(null),
     hasRole,
     encryptField: async (plain) => {
       if (!hasRole(`_tide_${PAYOUT_TAG}.selfencrypt`)) throw new Error('Không có quyền mã hóa')
@@ -148,16 +196,14 @@ function MockBridge({ children }: { children: ReactNode }) {
       if (!hasRole(`_tide_${PAYOUT_TAG}.selfdecrypt`)) throw new Error('Không có quyền giải mã')
       return mockDecrypt(cipher)
     },
-    authFetch: (url, init = {}) =>
-      fetch(url, {
+    authFetch: async (url, init = {}) => {
+      const token = await freshToken()
+      return fetch(url, {
         ...init,
-        headers: {
-          'Content-Type': 'application/json',
-          ...init.headers,
-          ...(user ? { 'x-mock-user': encodeURIComponent(JSON.stringify(user)) } : {}),
-        },
-      }),
-    mockUsers: MOCK_USERS,
+        headers: { 'Content-Type': 'application/json', ...init.headers, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      })
+    },
+    mockUsers: accounts,
     switchMockUser,
   }
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>

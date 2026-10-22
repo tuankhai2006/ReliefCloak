@@ -26,6 +26,13 @@ Chạy mock: sao chép `.env.example` thành `.env.local`, `npm ci`, `npm run de
 - Quyền đăng bài độc lập với `auditor` và `disburser`.
 - Dữ liệu report dùng file JSON cục bộ, không được mã hóa. Chỉ dùng dữ liệu tổng hợp cho demo; không nhập thông tin định danh nhạy cảm.
 
+## TideCloak mô phỏng (mock mode)
+
+- Mạng Tide đang quá tải nên demo dùng TideCloak mô phỏng: chọn tài khoản = đăng nhập Tide mô phỏng, server cấp token EdDSA có claim giống Tide, mọi API xác thực chữ ký và lấy vai trò từ token. Header `x-mock-user` không còn được tin.
+- `/governance` (vai trò `tide-realm-admin`): đổi vai trò là change request, chỉ có hiệu lực khi đủ quorum `max(1, floor(0,7 × số admin))` (3 admin → 2 chữ ký). Một admin không thể tự cấp quyền giải ngân cho mình.
+- Chi tiết và cách chuyển sang TideCloak thật: `docs/TIDE_INTEGRATION.md`.
+
+
 ## Phần công khai & người dân (Khai) — 22/10/2026
 
 - Song ngữ Việt/Anh (mặc định Việt), nút VI/EN trên header; dùng chung khóa `relief-language` với khu admin nên chọn một lần là đủ. Nội dung report giữ nguyên ngôn ngữ người viết.

@@ -1,12 +1,12 @@
 // Phía server: xác định ai đang gọi API.
-// - Mock mode: đọc header x-mock-user (do lib/tide.ts gửi kèm).
+// - Mock mode: SIMULATED TideCloak. Verify the EdDSA token from lib/simTide.ts (same claims as Tide).
 // - Tide mode: verify Bearer token bằng TideCloak, lấy realm roles trong token.
 import { verifyTideCloakToken } from '@tidecloak/nextjs/server'
 import type { TidecloakConfig } from '@tidecloak/nextjs/server'
 import rawConfig from '../tidecloak.json'
 import { NextResponse } from 'next/server'
 import { ServiceError } from '@/services/claimService'
-import { DEMO_USERS } from './demoUsers'
+import { rolesOf as simRolesOf, verifyToken as verifySimToken } from './simTide'
 
 const tcConfig = rawConfig as TidecloakConfig
 export const MOCK = process.env.NEXT_PUBLIC_TIDE_MOCK === 'true'
@@ -19,13 +19,14 @@ export interface SessionUser {
 
 export async function getSessionUser(req: Request): Promise<SessionUser | null> {
   if (MOCK) {
-    const raw = req.headers.get('x-mock-user')
-    if (!raw) return null
-    try {
-      const input = JSON.parse(decodeURIComponent(raw))
-      // Ignore caller-supplied roles. Mock remains openly selectable, never real auth.
-      return DEMO_USERS.find(user => user.id === input?.id) ?? null
-    } catch { return null }
+    // Simulated TideCloak: same Bearer-token path as real Tide. The token's signature, issuer,
+    // client and expiry are verified and roles come only from its claims (lib/simTide.ts).
+    // A caller-supplied x-mock-user header is no longer trusted.
+    const bearer = req.headers.get('authorization')
+    if (!bearer?.startsWith('Bearer ')) return null
+    const claims = verifySimToken(bearer.slice(7))
+    if (!claims) return null
+    return { id: claims.vuid, name: claims.name ?? claims.preferred_username, roles: simRolesOf(claims) }
   }
 
   const auth = req.headers.get('authorization')
@@ -38,7 +39,7 @@ export async function getSessionUser(req: Request): Promise<SessionUser | null> 
   return {
     id: payload.vuid ?? payload.sub,
     name: payload.preferred_username ?? 'unknown',
-    roles: payload.realm_access?.roles ?? [],
+    roles: simRolesOf(payload as any), // realm roles + client roles (tide-realm-admin is on realm-management)
   }
 }
 
