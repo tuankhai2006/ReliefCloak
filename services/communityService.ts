@@ -3,6 +3,7 @@ import type { CommunityPost, CommunityReport } from '@/models/community'
 import type { SessionUser } from '@/lib/auth'
 import { ServiceError } from './claimService'
 import { readRelief, mutateRelief } from '@/models/reliefStore'
+import { NEEDS, PUBLIC_IMAGES, URGENCIES, type Need } from '@/models/publicImages'
 
 function text(body: unknown, key: string, max: number): string {
   const value = body && typeof body === 'object' ? (body as Record<string, unknown>)[key] : undefined
@@ -13,9 +14,29 @@ function text(body: unknown, key: string, max: number): string {
 export function reportsFor(user: SessionUser) {
   return readRelief().reports.filter(r => user.roles.includes('org_admin') || r.createdBy === user.id)
 }
+// needs/urgency/image là tùy chọn để form cũ (chỉ region + description) vẫn chạy.
+// needs lưu dạng "food,water" theo kiểu string của CommunityReport.
+function optionalFields(body: unknown): Pick<CommunityReport, 'needs' | 'urgency' | 'image'> {
+  const input = body && typeof body === 'object' ? (body as Record<string, unknown>) : {}
+  const out: Pick<CommunityReport, 'needs' | 'urgency' | 'image'> = {}
+  if (input.needs !== undefined) {
+    if (!Array.isArray(input.needs) || input.needs.some(n => !NEEDS.includes(n as Need))) throw new ServiceError(400, 'INVALID_needs')
+    if (input.needs.length) out.needs = [...new Set(input.needs as Need[])].join(',')
+  }
+  if (input.urgency !== undefined) {
+    if (!URGENCIES.includes(input.urgency as (typeof URGENCIES)[number])) throw new ServiceError(400, 'INVALID_urgency')
+    out.urgency = input.urgency as CommunityReport['urgency']
+  }
+  if (input.image !== undefined && input.image !== '') {
+    if (!PUBLIC_IMAGES.includes(input.image as (typeof PUBLIC_IMAGES)[number])) throw new ServiceError(400, 'INVALID_image')
+    out.image = input.image as string
+  }
+  return out
+}
 export function submitReport(user: SessionUser, body: unknown) {
   const report: CommunityReport = {
     id: randomUUID(), region: text(body, 'region', 160), description: text(body, 'description', 3000),
+    ...optionalFields(body),
     createdBy: user.id, createdAt: new Date().toISOString(),
     status: 'NEW',
   }

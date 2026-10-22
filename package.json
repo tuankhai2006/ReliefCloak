@@ -10,7 +10,9 @@
     "reset:relief": "node scripts/reset-relief.cjs",
     "start": "next start",
     "init": "bash init/tcinit.sh",
-    "reset-db": "node -e \"require('fs').copyFileSync('data/db.seed.json','data/db.json')\""
+    "reset-db": "node -e \"require('fs').copyFileSync('data/db.seed.json','data/db.json')\"",
+    "test:public": "node scripts/test-public.cjs",
+    "test": "npm run -s test:community && npm run -s test:governance && npm run -s test:public"
   },
   "dependencies": {
     "@tidecloak/nextjs": "^0.14.40",
