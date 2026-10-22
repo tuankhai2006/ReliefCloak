@@ -21,6 +21,9 @@ Our prototype demonstrates a live emergency scenario in a flood-affected area: a
 
 ## Setup Instructions
 
+> **Before running the app, read [docs/SETUP.md](docs/SETUP.md).**
+> You must create `.env.local` from `.env.example` (it sets `NEXT_PUBLIC_TIDE_MOCK=true`). Without it the app shows a **Sign in** button that fails, because no live TideCloak realm is configured.
+
 Admin workspace: open `/admin` after starting the app. See [admin API and teammate handoff](docs/ADMIN_HANDOFF.md) for the role-specific workflow, isolated tests, seed reset, and public/donation integration contracts. The new workflow uses simulated funds and independent application roles; live Tide transaction enforcement is still pending.
 
 Implementation status: the current app supports private resident reports and admin-only public posts. See [current flow and Tide integration limits](docs/CURRENT_FLOW.md). The vision above is not a verified security guarantee: payouts are simulated, database approvals are not Tide signatures, and a live Tide realm plus transaction policy still need configuration and validation.
