@@ -1,0 +1,88 @@
+1
+00:00:00,400 --> 00:00:04,474
+When floods hit Vietnam, millions are donated
+within days.
+
+2
+00:00:04,527 --> 00:00:10,256
+ReliefCloak lets residents report needs
+privately, and lets donors see where every dong
+goes.
+
+3
+00:00:10,316 --> 00:00:12,480
+The problem is trust.
+
+4
+00:00:12,546 --> 00:00:19,284
+In a normal charity app, one admin who controls
+the server can grant themselves payout rights
+and send money anywhere.
+
+5
+00:00:19,350 --> 00:00:23,354
+Here, a resident donates and gets exactly one
+receipt.
+
+6
+00:00:25,724 --> 00:00:28,323
+Payouts need three different people.
+
+7
+00:00:28,537 --> 00:00:34,400
+An admin proposes, an independent auditor
+approves, and a separate officer executes.
+
+8
+00:00:36,919 --> 00:00:41,753
+Every step lands in a public ledger, without
+donor or recipient identities.
+
+9
+00:00:42,337 --> 00:00:45,416
+This is where TideCloak changes the rules.
+
+10
+00:00:46,135 --> 00:00:52,814
+Every sign-in returns a signed token, and every
+API verifies it. A forged role is rejected.
+
+11
+00:00:52,871 --> 00:00:57,695
+Role changes are change requests that only
+commit when a quorum of admins signs.
+
+12
+00:00:57,749 --> 00:01:02,658
+Minh tries to give himself payout rights. It
+stays at one of two.
+
+13
+00:01:02,710 --> 00:01:06,029
+Ha, a second admin, denies it.
+
+14
+00:01:07,269 --> 00:01:11,018
+Granting a new officer works only when two
+admins agree.
+
+15
+00:01:21,060 --> 00:01:24,164
+No single admin holds that power alone.
+
+16
+00:01:25,089 --> 00:01:28,223
+Donors no longer have to trust one person.
+
+17
+00:01:28,286 --> 00:01:37,169
+TideCloak is simulated here because the Tide
+network was overloaded. The same tokens, roles
+and quorum switch to live TideCloak with one
+setting.
+
+18
+00:01:37,228 --> 00:01:41,652
+ReliefCloak. Emergent authority for disaster
+relief.
+
