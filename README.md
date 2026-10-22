@@ -32,7 +32,7 @@ npm install
 cp .env.example .env.local   # NEXT_PUBLIC_TIDE_MOCK=true
 npm run dev
 ```
-Open http://localhost:3000 and pick a role in the top-right corner.
+Open http://localhost:3000 and pick a role in the top-right corner. Full walkthrough (Vietnamese): [docs/SETUP.md](docs/SETUP.md).
 
 ### With TideCloak
 1. Start a TideCloak server on http://localhost:8080 (see the TideCloak getting-started guide).

@@ -2,6 +2,7 @@
 
 > Đọc file này trước khi code. Hạn nộp: **18:00 hôm nay (22/10, giờ VN)**.
 > Chỉ làm phần lõi. Phần lặt vặt (map, upload ảnh thật, thanh toán thật, responsive đẹp) thì **bỏ qua**.
+> 👉 Cách cài và chạy app: xem [SETUP.md](SETUP.md).
 
 ---
 
