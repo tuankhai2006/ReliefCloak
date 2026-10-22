@@ -19,55 +19,27 @@ With TideCloak, the backend database only stores encrypted vault state—it hold
 5. Prototype & Storytelling
 Our prototype demonstrates a live emergency scenario in a flood-affected area: a field worker submits an emergency aid claim, triggering a multi-party approval sequence. Once all three TideCloak identities sign the transaction, the relief payout is decrypted and released in real time.
 
-Setup Instructions
+## Setup Instructions
 
-Prerequisites
+### Prerequisites
+- Node.js 20.9+ and npm
+- Docker (for the TideCloak server)
+- Git Bash (Windows) with `curl` and `jq` for the init script
 
-Node.js: v18.0.0 or higher
-
-npm: v9.0.0 or higher
-
-TideCloak Environment: Active credentials or TideCloak Quickstart setup
-
-Installation
-
-Clone the repository:
-
-git clone https://github.com/YOUR_GITHUB_USERNAME/ReliefCloak.git
-cd ReliefCloak
-
-
-Install dependencies:
-
+### Quick start (mock mode, no TideCloak needed)
+```bash
 npm install
-
-
-Configure Environment Variables:
-Create a .env file in the root directory and populate it with your TideCloak credentials:
-
-PORT=3000
-TIDECLOAK_SERVER_URL=https://auth.tidecloak.com
-TIDECLOAK_REALM=relief-cloak
-TIDECLOAK_CLIENT_ID=relief-cloak-app
-TIDECLOAK_CLIENT_SECRET=your_client_secret
-
-
-Run the Application:
-
-Development Mode:
-
+cp .env.example .env.local   # NEXT_PUBLIC_TIDE_MOCK=true
 npm run dev
+```
+Open http://localhost:3000 and pick a role in the top-right corner.
 
+### With TideCloak
+1. Start a TideCloak server on http://localhost:8080 (see the TideCloak getting-started guide).
+2. Adjust `init/.env.example` if needed (the init script reads defaults from it).
+3. `npm run init` provisions the realm (with the ReliefCloak roles) and writes `tidecloak.json`.
+4. Set `NEXT_PUBLIC_TIDE_MOCK=false` in `.env.local`, then `npm run dev`.
 
-Production Build:
-
-npm run build
-npm start
-
-
-Access the Application:
-Open your browser and navigate to http://localhost:3000.
-
-Demo Video
+## Demo Video
 
 The 2-minute prototype demonstration is available inside this repository at ./demo.mp4.

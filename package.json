@@ -1,0 +1,29 @@
+{
+  "name": "relief-cloak",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "init": "bash init/tcinit.sh",
+    "reset-db": "node -e \"require('fs').copyFileSync('data/db.seed.json','data/db.json')\""
+  },
+  "dependencies": {
+    "@tidecloak/nextjs": "^0.14.40",
+    "next": "16.x",
+    "react": "19.x",
+    "react-dom": "19.x"
+  },
+  "overrides": {
+    "postcss": "^8.5.25",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "24.0.13",
+    "@types/react": "19.1.8",
+    "tailwindcss": "^4",
+    "typescript": "5.8.3"
+  }
+}

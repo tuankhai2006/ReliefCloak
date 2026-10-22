@@ -12,6 +12,19 @@ Thông tin nhận tiền của nạn nhân (STK, CCCD) **luôn bị mã hóa b�
 **Câu ban giám khảo sẽ hỏi:** *"Nếu dùng login thường thì app có chạy y hệt không?"*
 → **Không.** Với login thường, admin sửa DB là chi được tiền. Với TideCloak, admin sửa DB cũng không mở được STK. Trang `/rogue` dùng để chứng minh điều này.
 
+### ⚠️ Phát hiện quan trọng về TideCloak (Người 1 đọc kỹ)
+
+Đã kiểm tra SDK thật (`@tidecloak/nextjs` 0.14.40, template `@tidecloak/create-nextjs`):
+
+- `doEncrypt`/`doDecrypt` dùng role `_tide_<tag>.selfencrypt` / `.selfdecrypt`. Template ghi rõ: **self**-encrypt nghĩa là dữ liệu gắn với danh tính **người mã hóa**, chỉ người đó giải mã được.
+  → Nếu Field Worker mã hóa thì **Officer KHÔNG mở được** bằng `selfdecrypt` thông thường.
+- Cách đúng cho ý tưởng của mình là **Policy-Protected Decryption with approval** (có trong SDK):
+  `draftDecryption()` → `requestTideOperatorApproval()` (Chủ quỹ + Auditor duyệt) → `commitDecryption(request, policy)`.
+  Cần một **Tide Policy + Forseti contract** đã ký. Tài liệu tạo policy đang ghi "coming soon", nên **hỏi ngay Tide MCP / Discord #support**: *"How do I create a signed decryption policy requiring 2 approvers (org_admin + auditor) so a disburser can decrypt data encrypted by a field_worker?"*
+- **IGA (quorum duyệt thay đổi quyền) chắc chắn có sẵn:** template bật IGA, mọi thay đổi user/role tạo change request PENDING cần admin duyệt. Đây là cảnh "admin tự cấp quyền thì bị kẹt".
+
+**Phương án B** (nếu policy không kịp trước ~14:00): Officer mã hóa và giải mã cùng một danh tính, cụ thể là Field Worker nhập STK trên máy của Officer, hoặc tạo một tài khoản "Disbursement Desk". Quyền `_tide_payout.selfdecrypt` của tài khoản đó chỉ được cấp qua IGA với đủ 2 admin duyệt. Admin và DB vẫn không đọc được STK, và không ai tự cấp quyền được.
+
 ---
 
 ## 1. Các vai trò
@@ -72,38 +85,52 @@ API route và DB **không bao giờ** nhận hay lưu plaintext STK/CCCD. Làm s
 
 ## 4. Cấu trúc project (MVC nhẹ trên Next.js)
 
+Khung đã được dựng sẵn từ template chính thức `@tidecloak/create-nextjs` (Next.js 16 + React 19), đặt ở **gốc repo** (không có `src/`):
+
 ```
 ReliefCloak/
 ├── README.md
-├── demo.mp4
-├── docs/TEAM_PLAN.md          ← file này
-├── data/db.json               ← DB giả lập
-└── src/
-    ├── app/                   ← VIEW
-    │   ├── page.tsx           Trang chủ, chọn vai
-    │   ├── claim/new/page.tsx ①
-    │   ├── claims/page.tsx    ②
-    │   ├── disburse/page.tsx  ④
-    │   ├── public/page.tsx    ⑤
-    │   ├── rogue/page.tsx     Demo tấn công
-    │   └── api/               ← CONTROLLER (mỏng: verify token, check role, gọi service)
-    │       ├── claims/route.ts
-    │       ├── claims/[id]/approve/route.ts
-    │       ├── claims/[id]/release/route.ts
-    │       └── rogue/route.ts
-    ├── services/
-    │   └── claimService.ts    Luật nghiệp vụ
-    ├── models/
-    │   ├── claim.ts           type Claim, ClaimStatus
-    │   └── db.ts              Đọc/ghi data/db.json
-    ├── lib/
-    │   ├── tide.ts            Bọc doEncrypt/doDecrypt, hasRole
-    │   └── auth.ts            Verify token phía server
-    └── components/
-        ├── ClaimCard.tsx
-        ├── ApproveButton.tsx
-        ├── StatusBadge.tsx
-        └── EncryptedField.tsx Hiện 🔒 hoặc plaintext
+├── docs/TEAM_PLAN.md            ← file này
+├── tidecloak.json               ← "{}" cho tới khi chạy `npm run init` (Người 1)
+├── init/                        ← script + realm.json của Tide (đã thêm role ReliefCloak)
+├── .env.example                 ← NEXT_PUBLIC_TIDE_MOCK=true/false
+├── data/db.seed.json            ← dữ liệu mẫu (db.json tự tạo khi chạy, không commit)
+├── public/photos/               ← ảnh mẫu hiện trường
+├── app/                         ← VIEW
+│   ├── layout.tsx               bọc <TideProvider> + NavBar
+│   ├── page.tsx                 Trang chủ
+│   ├── auth/redirect/page.tsx   Trang Tide quay về sau khi login
+│   ├── claim/new/page.tsx       ①
+│   ├── claims/page.tsx          ②
+│   ├── disburse/page.tsx        ④
+│   ├── public/page.tsx          ⑤
+│   ├── rogue/page.tsx           Demo tấn công
+│   └── api/                     ← CONTROLLER (mỏng: lấy user, gọi service)
+│       ├── claims/route.ts
+│       ├── claims/[id]/approve/route.ts
+│       ├── claims/[id]/release/route.ts
+│       └── rogue/route.ts
+├── services/claimService.ts     Luật nghiệp vụ
+├── models/
+│   ├── claim.ts                 type Claim, ClaimStatus, Role
+│   └── db.ts                    Đọc/ghi data/db.json
+├── lib/
+│   ├── tide.tsx                 useTide(): login, hasRole, encryptField, decryptField, authFetch (mock + thật)
+│   ├── auth.ts                  Server: lấy user từ token (hoặc header mock)
+│   └── useClaims.ts             Hook tải danh sách claim
+└── components/
+    ├── NavBar.tsx               Menu + chọn vai (mock) / đăng nhập
+    ├── RequireRole.tsx
+    ├── ClaimCard.tsx
+    ├── StatusBadge.tsx
+    └── EncryptedField.tsx       Hiện 🔒 hoặc plaintext
+```
+
+**Chạy thử ngay (mock, chưa cần TideCloak):**
+```bash
+npm install
+cp .env.example .env.local     # NEXT_PUBLIC_TIDE_MOCK=true
+npm run dev                    # http://localhost:3000, chọn vai ở góc phải
 ```
 
 | Lớp | Làm gì | KHÔNG làm gì |
@@ -164,9 +191,11 @@ Người 2 và 3 có thể làm song song từ đầu bằng cách **mock `lib/t
 
 Nhờ 3 hợp đồng này, 4 người code song song được mà không phải chờ nhau.
 
-**a) Type `Claim`:** xem mục 4. Người 2 tạo `src/models/claim.ts` đầu tiên rồi push ngay.
+> ✅ Cả 3 hợp đồng đã được code sẵn: `models/claim.ts`, `lib/tide.tsx` (hook `useTide()`, có cả bản mock lẫn bản Tide thật), và các route trong `app/api/`. Phần dưới đây giữ lại để tham khảo.
 
-**b) `lib/tide.ts`:** Người 1 viết. Người 3 dùng bản mock trước:
+**a) Type `Claim`:** xem `models/claim.ts`.
+
+**b) `lib/tide.tsx`:** thực tế là hook `useTide()` trả về các hàm dưới đây. Mock bật/tắt bằng `NEXT_PUBLIC_TIDE_MOCK`:
 
 ```ts
 // Chạy trên client (component có "use client")

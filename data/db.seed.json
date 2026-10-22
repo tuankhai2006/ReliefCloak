@@ -1,0 +1,43 @@
+{
+  "claims": [
+    {
+      "id": "c-1001",
+      "victimName": "Nguyễn Văn An",
+      "region": "Phong Điền, Huế",
+      "amount": 5000000,
+      "gps": "16.5541, 107.3536",
+      "photoUrl": "/photos/flood-1.svg",
+      "description": "Nhà ngập 1,5m, mất toàn bộ lúa giống.",
+      "createdBy": "fw-1",
+      "createdByName": "Lan (Field Worker)",
+      "createdAt": "2026-10-22T02:10:00.000Z",
+      "encryptedBankAccount": "MOCK:MDEyMzQ1Njc4OSAtIFZpZXRjb21iYW5r.a7eae332",
+      "encryptedNationalId": "MOCK:MDQ2MjAxMDEyMzQ1.b369ebe1",
+      "approvals": [
+        {
+          "userId": "org-1",
+          "userName": "Minh (Chủ quỹ)",
+          "role": "org_admin",
+          "at": "2026-10-22T02:40:00.000Z"
+        }
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "c-1002",
+      "victimName": "Trần Thị Bình",
+      "region": "Quảng Điền, Huế",
+      "amount": 3000000,
+      "gps": "16.5862, 107.4920",
+      "photoUrl": "/photos/flood-2.svg",
+      "description": "Sập mái bếp, có 2 trẻ nhỏ.",
+      "createdBy": "fw-1",
+      "createdByName": "Lan (Field Worker)",
+      "createdAt": "2026-10-22T03:05:00.000Z",
+      "encryptedBankAccount": "MOCK:OTg3NjU0MzIxMCAtIEFncmliYW5r.9dff067e",
+      "encryptedNationalId": "MOCK:MDQ2MTk5MDA5ODc2.f501b0a0",
+      "approvals": [],
+      "status": "PENDING"
+    }
+  ]
+}
