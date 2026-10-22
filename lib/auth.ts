@@ -50,12 +50,12 @@ export async function withUser(
 ): Promise<NextResponse> {
   try {
     const user = await getSessionUser(req)
-    if (!user) return NextResponse.json({ error: 'Chưa đăng nhập' }, { status: 401 })
+    if (!user) return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
     return NextResponse.json(await fn(user))
   } catch (err) {
-    if (err instanceof SyntaxError) return NextResponse.json({ error: 'JSON không hợp lệ' }, { status: 400 })
+    if (err instanceof SyntaxError) return NextResponse.json({ error: 'INVALID_JSON' }, { status: 400 })
     if (err instanceof ServiceError) return NextResponse.json({ error: err.message }, { status: err.status })
     console.error(err)
-    return NextResponse.json({ error: 'Lỗi server' }, { status: 500 })
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 })
   }
 }

@@ -8,7 +8,7 @@ import { DemoBanner, Footer } from '@/components/SiteChrome'
 
 export const metadata: Metadata = {
   title: 'ReliefCloak',
-  description: 'Cứu trợ thiên tai minh bạch, không ai có thể đơn phương giải ngân',
+  description: 'Transparent disaster relief where no single admin can pay out alone',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
