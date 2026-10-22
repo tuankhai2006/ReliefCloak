@@ -3,9 +3,11 @@ import Link from 'next/link'
 import { useTide, MOCK } from '@/lib/tide'
 
 const STEPS = [
+  { who: 'Người dân', what: 'Gửi report riêng tư về tình hình và nhu cầu cứu trợ', href: '/reports' },
+  { who: 'Bảng tin', what: 'Chỉ admin biên tập và đăng thông tin công khai', href: '/posts' },
   { who: 'Field Worker', what: 'Tạo claim, STK/CCCD được mã hóa ngay trên trình duyệt', href: '/claim/new' },
   { who: 'Chủ quỹ + Auditor', what: 'Cùng duyệt claim. Không ai thấy STK', href: '/claims' },
-  { who: 'Officer', what: 'Đủ chữ ký mới mở khóa được STK và giải ngân', href: '/disburse' },
+  { who: 'Officer', what: 'Thử luồng giải ngân mô phỏng sau khi duyệt', href: '/disburse' },
   { who: 'Người quyên góp', what: 'Xem ai đã duyệt, tiền đi đâu', href: '/public' },
 ]
 
@@ -16,8 +18,9 @@ export default function HomePage() {
       <section>
         <h1 className="text-3xl font-bold">ReliefCloak</h1>
         <p className="mt-2 text-slate-600">
-          Tiền cứu trợ chỉ được giải ngân khi Tình nguyện viên, Chủ quỹ và Kiểm toán cùng ký. Không admin nào có thể
-          một mình đọc hay chuyển hướng tiền.
+          Người dân báo cáo nhu cầu, admin đăng tin và các bên cùng xem xét hồ sơ cứu trợ.
+          Đăng bài không cấp quyền giải ngân. Bản hiện tại mô phỏng việc chi tiền;
+          phê duyệt trong ứng dụng chưa phải chữ ký Tide cho từng giao dịch.
         </p>
         <p className="mt-2 text-sm">
           {user ? (

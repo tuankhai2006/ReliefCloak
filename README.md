@@ -21,6 +21,8 @@ Our prototype demonstrates a live emergency scenario in a flood-affected area: a
 
 ## Setup Instructions
 
+Implementation status: the current app supports private resident reports and admin-only public posts. See [current flow and Tide integration limits](docs/CURRENT_FLOW.md). The vision above is not a verified security guarantee: payouts are simulated, database approvals are not Tide signatures, and a live Tide realm plus transaction policy still need configuration and validation.
+
 ### Prerequisites
 - Node.js 20.9+ and npm
 - Docker (for the TideCloak server)

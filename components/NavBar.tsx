@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { useTide, MOCK } from '@/lib/tide'
 
 const LINKS = [
+  { href: '/posts', label: 'Bảng tin', role: null },
+  { href: '/reports', label: 'Report', role: null },
   { href: '/claim/new', label: 'Tạo claim', role: 'field_worker' },
   { href: '/claims', label: 'Duyệt claim', role: null },
   { href: '/disburse', label: 'Giải ngân', role: 'disburser' },

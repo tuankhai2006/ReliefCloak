@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "test:community": "node scripts/test-community.cjs",
     "start": "next start",
     "init": "bash init/tcinit.sh",
     "reset-db": "node -e \"require('fs').copyFileSync('data/db.seed.json','data/db.json')\""

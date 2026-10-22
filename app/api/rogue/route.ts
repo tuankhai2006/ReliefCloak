@@ -7,6 +7,9 @@ import type { Claim } from '@/models/claim'
 type Attack = 'set-paid' | 'swap-account' | 'fake-claim' | 'reset'
 
 export async function POST(req: Request) {
+  if (process.env.NEXT_PUBLIC_TIDE_MOCK !== 'true' || process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Công cụ sửa DB chỉ dành cho demo mock cục bộ' }, { status: 403 })
+  }
   const { attack, claimId } = (await req.json()) as { attack: Attack; claimId?: string }
   const target = claimId ? claimRepo.get(claimId) : claimRepo.all()[0]
 

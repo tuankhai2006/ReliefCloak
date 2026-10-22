@@ -85,6 +85,7 @@ function RealBridge({ children }: { children: ReactNode }) {
 // ───────────────────────── Mock ─────────────────────────
 
 const MOCK_USERS: TideUser[] = [
+  { id: 'resident-1', name: 'An (Người dân)', roles: ['appUser'] },
   { id: 'fw-1', name: 'Lan (Field Worker)', roles: ['field_worker', '_tide_payout.selfencrypt'] },
   { id: 'org-1', name: 'Minh (Chủ quỹ)', roles: ['org_admin'] },
   { id: 'aud-1', name: 'Hà (Auditor)', roles: ['auditor'] },
