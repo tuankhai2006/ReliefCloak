@@ -1,7 +1,5 @@
-import { withUser } from '@/lib/auth'
-import { releaseClaim } from '@/services/claimService'
+import { NextResponse } from 'next/server'
 
-export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  return withUser(req, (user) => releaseClaim(user, id))
+export async function POST() {
+  return NextResponse.json({ error: 'LEGACY_PAYOUT_DISABLED', replacement: '/api/admin/disbursements' }, { status: 410 })
 }

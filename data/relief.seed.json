@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "reports": [
+    { "id": "report-hue", "region": "Hương Trà, Huế", "description": "Dữ liệu giả: 24 hộ cần nước sạch và thực phẩm sau ngập. Không chứa thông tin cá nhân thật.", "createdBy": "resident-1", "createdAt": "2026-10-22T02:00:00.000Z", "status": "ACCEPTED", "feedback": "Đã kiểm tra hồ sơ mẫu; có thể lập chiến dịch.", "reviewedBy": "org-1", "urgency": "URGENT" },
+    { "id": "report-quangtri", "region": "Hải Lăng, Quảng Trị", "description": "Dữ liệu giả: điểm sơ tán cần bộ vệ sinh và chăn cho 18 hộ.", "createdBy": "resident-2", "createdAt": "2026-10-22T03:30:00.000Z", "status": "NEW", "urgency": "URGENT" },
+    { "id": "report-quangnam", "region": "Đại Lộc, Quảng Nam", "description": "Dữ liệu giả: cần thực phẩm khô cho 12 hộ đang ở điểm sơ tán.", "createdBy": "resident-1", "createdAt": "2026-10-22T04:00:00.000Z", "status": "VERIFYING", "feedback": "Đang kiểm tra nhu cầu mẫu.", "urgency": "STANDARD" }
+  ],
+  "posts": [],
+  "campaigns": [
+    { "id": "campaign-hue", "reportId": "report-hue", "region": "Hương Trà, Huế", "title": { "vi": "Nước sạch và nhu yếu phẩm cho Huế", "en": "Clean water and essential supplies for Hue" }, "content": { "vi": "Chiến dịch minh họa hỗ trợ 24 hộ bằng nước sạch và thực phẩm. Toàn bộ dữ liệu và giao dịch đều mô phỏng.", "en": "An illustrative campaign supporting 24 households with clean water and food. All data and transactions are simulated." }, "image": "/photos/flood-1.svg", "targetVnd": 50000000, "status": "PUBLISHED", "createdBy": "org-1", "createdAt": "2026-10-22T02:30:00.000Z", "updatedAt": "2026-10-22T02:30:00.000Z" }
+  ],
+  "donations": [
+    { "id": "donation-seed-1", "campaignId": "campaign-hue", "donorId": "resident-1", "amountVnd": 12000000, "anonymous": true, "idempotencyKey": "seed-1", "receipt": "SIM-SEED-1", "createdAt": "2026-10-22T03:00:00.000Z", "simulated": true },
+    { "id": "donation-seed-2", "campaignId": "campaign-hue", "donorId": "resident-2", "amountVnd": 6000000, "anonymous": true, "idempotencyKey": "seed-2", "receipt": "SIM-SEED-2", "createdAt": "2026-10-22T03:15:00.000Z", "simulated": true }
+  ],
+  "disbursements": [
+    { "id": "payout-seed-1", "campaignId": "campaign-hue", "amountVnd": 3000000, "purpose": "Nước uống đóng chai / Bottled drinking water (demo)", "recipient": "Điểm hỗ trợ A — người nhận giả lập / Demo recipient A", "proposedBy": "org-1", "proposedAt": "2026-10-22T04:00:00.000Z", "status": "PENDING_AUDIT" }
+  ],
+  "audit": [
+    { "id": "event-seed-1", "actorId": "org-1", "actorName": "Minh (Chủ quỹ)", "action": "PAYOUT_PROPOSED", "objectId": "payout-seed-1", "at": "2026-10-22T04:00:00.000Z" }
+  ]
+}

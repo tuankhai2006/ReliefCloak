@@ -5,6 +5,12 @@ next-env.d.ts
 *.tsbuildinfo
 .env
 .env.local
+.env.tide.local
+init/.firstAdmin*
+init/.realm*
 data/db.json
 data/community.json
 data/community.json.tmp
+data/relief.json
+data/relief.json.tmp
+data/relief.lock/

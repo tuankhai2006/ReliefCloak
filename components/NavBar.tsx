@@ -6,10 +6,7 @@ const LINKS = [
   { href: '/posts', label: 'Bảng tin', role: null },
   { href: '/reports', label: 'Report', role: null },
   { href: '/claim/new', label: 'Tạo claim', role: 'field_worker' },
-  { href: '/claims', label: 'Duyệt claim', role: null },
-  { href: '/disburse', label: 'Giải ngân', role: 'disburser' },
-  { href: '/public', label: 'Công khai', role: null },
-  { href: '/rogue', label: '🏴‍☠️ Rogue Admin', role: null },
+  { href: '/admin/disbursements', label: 'Giải ngân', role: 'disburser' },
 ]
 
 export default function NavBar() {
@@ -22,6 +19,7 @@ export default function NavBar() {
           🛡️ ReliefCloak
         </Link>
         <nav className="flex flex-wrap gap-3 text-sm">
+          {['org_admin', 'auditor', 'disburser'].some(hasRole) && <Link href="/admin" className="font-semibold text-emerald-700 hover:underline">Quản trị / Admin</Link>}
           {LINKS.filter((l) => !l.role || hasRole(l.role)).map((l) => (
             <Link key={l.href} href={l.href} className="hover:underline">
               {l.label}

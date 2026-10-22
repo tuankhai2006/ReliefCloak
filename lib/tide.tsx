@@ -5,6 +5,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { TideCloakProvider, useTideCloak } from '@tidecloak/nextjs'
 import tcConfig from '../tidecloak.json'
+import { DEMO_USERS } from './demoUsers'
 
 export const MOCK = process.env.NEXT_PUBLIC_TIDE_MOCK === 'true'
 export const PAYOUT_TAG = 'payout'
@@ -84,13 +85,7 @@ function RealBridge({ children }: { children: ReactNode }) {
 
 // ───────────────────────── Mock ─────────────────────────
 
-const MOCK_USERS: TideUser[] = [
-  { id: 'resident-1', name: 'An (Người dân)', roles: ['appUser'] },
-  { id: 'fw-1', name: 'Lan (Field Worker)', roles: ['field_worker', '_tide_payout.selfencrypt'] },
-  { id: 'org-1', name: 'Minh (Chủ quỹ)', roles: ['org_admin'] },
-  { id: 'aud-1', name: 'Hà (Auditor)', roles: ['auditor'] },
-  { id: 'off-1', name: 'Tuấn (Officer)', roles: ['disburser', '_tide_payout.selfdecrypt'] },
-]
+const MOCK_USERS: TideUser[] = DEMO_USERS
 
 // Checksum đơn giản để mô phỏng việc ciphertext bị sửa thì giải mã thất bại.
 function checksum(s: string): string {

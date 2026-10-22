@@ -6,6 +6,7 @@ import type { TidecloakConfig } from '@tidecloak/nextjs/server'
 import rawConfig from '../tidecloak.json'
 import { NextResponse } from 'next/server'
 import { ServiceError } from '@/services/claimService'
+import { DEMO_USERS } from './demoUsers'
 
 const tcConfig = rawConfig as TidecloakConfig
 export const MOCK = process.env.NEXT_PUBLIC_TIDE_MOCK === 'true'
@@ -19,13 +20,21 @@ export interface SessionUser {
 export async function getSessionUser(req: Request): Promise<SessionUser | null> {
   if (MOCK) {
     const raw = req.headers.get('x-mock-user')
-    return raw ? (JSON.parse(decodeURIComponent(raw)) as SessionUser) : null
+    if (!raw) return null
+    try {
+      const input = JSON.parse(decodeURIComponent(raw))
+      // Ignore caller-supplied roles. Mock remains openly selectable, never real auth.
+      return DEMO_USERS.find(user => user.id === input?.id) ?? null
+    } catch { return null }
   }
 
   const auth = req.headers.get('authorization')
   if (!auth?.startsWith('Bearer ')) return null
-  const payload = (await verifyTideCloakToken(tcConfig, auth.slice(7), [])) as Record<string, any> | null
+  let payload: Record<string, any> | null
+  try { payload = (await verifyTideCloakToken(tcConfig, auth.slice(7), [])) as Record<string, any> | null }
+  catch { return null }
   if (!payload) return null
+  if (typeof (payload.vuid ?? payload.sub) !== 'string' || !Array.isArray(payload.realm_access?.roles)) return null
   return {
     id: payload.vuid ?? payload.sub,
     name: payload.preferred_username ?? 'unknown',

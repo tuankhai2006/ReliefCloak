@@ -4,6 +4,13 @@ export interface CommunityReport {
   description: string
   createdBy: string
   createdAt: string
+  status?: import('./relief').ReportStatus
+  feedback?: string
+  reviewedBy?: string
+  reviewedAt?: string
+  needs?: string
+  urgency?: 'STANDARD' | 'URGENT'
+  image?: string
 }
 
 export interface CommunityPost {

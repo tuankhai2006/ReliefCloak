@@ -321,16 +321,16 @@ Tide environment investigation starts in M1, not after the UI is finished. Recor
 
 ### Coding agent
 
-- [ ] A1 — Domain/API contracts and serialized demo storage.
-- [ ] A2 — Server-side permissions and role-specific admin shell.
-- [ ] A3 — Admin report review and feedback.
-- [ ] A4 — Campaign editor, publication, closure, and write APIs.
-- [ ] A5 — Immutable disbursement proposals and auditor decisions.
-- [ ] A6 — Officer execution, balance checks, and duplicate prevention.
-- [ ] A7 — Audit history and public transparency projection.
+- [x] A1 — Domain/API contracts and serialized demo storage. See `docs/ADMIN_HANDOFF.md`; ready for Khai's integration review.
+- [x] A2 — Server-side permissions and role-specific admin shell.
+- [x] A3 — Admin report review and feedback.
+- [x] A4 — Campaign editor, publication, closure, and write APIs.
+- [x] A5 — Immutable disbursement proposals and auditor decisions.
+- [x] A6 — Officer execution, balance checks, and duplicate prevention.
+- [x] A7 — Audit history and public transparency projection.
 - [ ] A8 — Tide environment, auth, and governance validation.
-- [ ] A9 — Legacy flow migration and truthful integration documentation.
-- [ ] A10 — Backend negative cases and full build verification.
+- [x] A9 — Common-store migration and truthful integration documentation; old claim data retained separately, old payout endpoint disabled.
+- [x] A10 — Backend negative cases, HTTP integration checks, and full build verification. Browser visual verification remains outstanding because browser automation is disabled.
 
 ### Shared integration
 
@@ -378,12 +378,14 @@ Before handing off:
 | --- | --- | --- | --- | --- |
 | 2026-10-22 | Coding agent | Baseline `2863794`: private reports and admin posts | Type checking, community service tests, mock production build | Full product UI, campaigns/donations, and live Tide remain outstanding |
 | 2026-10-22 | Planning | Shared implementation plan created | Matches agreed scope and proposed vertical ownership | Confirm deadline and M1 contract commit before parallel feature work |
+| 2026-10-22 | Coding agent | A1–A7, A9–A10 on `feat/admin-governance`; handoff in `docs/ADMIN_HANDOFF.md` | Community/governance tests, production build, isolated HTTP end-to-end flow | Khai's public/donation route integration, human visual review; A8 in progress |
+| 2026-10-22 | Coding agent + user | A8: local Tide container and `reliefcloak` realm created; IGA enabled | Master discovery returned 200; realm setup returned 200; IGA enabled | Waiting for first administrator enrollment; real login, multiple independent admins and quorum demonstration not yet verified |
 
 ### Blockers / decisions
 
 | Item | Owner | Status / next action |
 | --- | --- | --- |
 | Exact delivery deadline | Team | Confirm available time and prioritize milestone delivery accordingly |
-| Live Tide environment | Coding agent / team | Mock only; obtain/start realm and independent demo accounts |
+| Live Tide environment | Coding agent / team | Local container running and realm/IGA created; first administrator enrollment is pending. App remains mock until provisioning and real auth checks complete. |
 | Per-payout cryptographic policy | Coding agent | Investigate verified Tide guidance; do not claim implemented protection |
-| Final route/type contracts | Both | Freeze in M1 and share the commit before parallel implementation |
+| Final route/type contracts | Both | Implemented contract in `docs/ADMIN_HANDOFF.md`; Khai must review before integrating public campaign/donation routes. |

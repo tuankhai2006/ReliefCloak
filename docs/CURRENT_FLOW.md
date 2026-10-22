@@ -1,5 +1,20 @@
 # Flow hiện tại và kế hoạch TideCloak
 
+## Cập nhật phần admin — 22/10/2026
+
+- `/admin` có tổng quan, report, chiến dịch, kiểm toán/giải ngân và nhật ký; giao diện Việt–Anh.
+- Luồng: NEW → VERIFYING → ACCEPTED/REJECTED; chiến dịch DRAFT → PUBLISHED → CLOSED.
+- Ba danh tính độc lập đề xuất, duyệt và chi mô phỏng; kiểm tra số dư, chi trùng và idempotency tại backend.
+- Kho dữ liệu chung `data/relief.json` giữ report/post cũ khi chuyển đổi. `/api/transparency` chỉ trả trường công khai.
+- Phần user/quyên góp của Khải nối vào hàm dùng chung theo `docs/ADMIN_HANDOFF.md`.
+- Endpoint giải ngân cũ `/api/claims/:id/release` đã ngừng hoạt động (410); dữ liệu claim cũ không nằm trong sổ chiến dịch mới.
+- TypeScript, build, kiểm tra service và luồng HTTP đã qua. Chưa kiểm tra hình thức bằng trình duyệt vì công cụ browser đang bị tắt.
+- Tide thật: container local và realm `reliefcloak` đã tạo, IGA đã bật. Đang chờ người dùng đăng ký quản trị viên đầu tiên. App vẫn dùng mock; chưa xác minh login/quorum hoặc policy cho từng giao dịch.
+
+Chi tiết API, chạy thử và chia việc: [ADMIN_HANDOFF.md](ADMIN_HANDOFF.md).
+
+Các mục bên dưới ghi lại baseline trước khi có khu admin mới.
+
 Chạy mock: sao chép `.env.example` thành `.env.local`, `npm ci`, `npm run dev`. Chọn An để gửi report; chọn Minh để duyệt và đăng bài; mở `/posts` để xem. `npm run test:community` kiểm tra quyền và tính riêng tư của luồng. Dùng webpack vì Turbopack lỗi tiến trình biên dịch CSS trên máy Windows hiện tại.
 
 ## Đã triển khai

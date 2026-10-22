@@ -6,6 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "test:community": "node scripts/test-community.cjs",
+    "test:governance": "node scripts/test-governance.cjs",
+    "reset:relief": "node scripts/reset-relief.cjs",
     "start": "next start",
     "init": "bash init/tcinit.sh",
     "reset-db": "node -e \"require('fs').copyFileSync('data/db.seed.json','data/db.json')\""

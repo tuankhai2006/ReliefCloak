@@ -2,23 +2,11 @@ const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
-const vm = require('node:vm')
-const ts = require('typescript')
 
 // Isolated store: never writes to the app's demo data.
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'relief-community-'))
 fs.mkdirSync(path.join(directory, 'data'))
-class ServiceError extends Error { constructor(status, message) { super(message); this.status = status } }
-const source = ts.transpileModule(fs.readFileSync('services/communityService.ts', 'utf8'), {
-  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true },
-}).outputText
-const exportsObject = {}
-vm.runInNewContext(source, {
-  exports: exportsObject,
-  require: name => name === './claimService' ? { ServiceError } : require(name),
-  process: { cwd: () => directory },
-})
-const s = exportsObject
+const s = require('./service-test-loader.cjs')(directory)('services/communityService.ts')
 const resident = { id: 'one', name: 'Resident', roles: ['appUser'] }
 const other = { id: 'two', name: 'Other', roles: ['appUser'] }
 const admin = { id: 'admin', name: 'Admin', roles: ['org_admin'] }
