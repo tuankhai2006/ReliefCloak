@@ -26,6 +26,24 @@ Chạy mock: sao chép `.env.example` thành `.env.local`, `npm ci`, `npm run de
 - Quyền đăng bài độc lập với `auditor` và `disburser`.
 - Dữ liệu report dùng file JSON cục bộ, không được mã hóa. Chỉ dùng dữ liệu tổng hợp cho demo; không nhập thông tin định danh nhạy cảm.
 
+## TideCloak mô phỏng (mock mode)
+
+- Mạng Tide đang quá tải nên demo dùng TideCloak mô phỏng: chọn tài khoản = đăng nhập Tide mô phỏng, server cấp token EdDSA có claim giống Tide, mọi API xác thực chữ ký và lấy vai trò từ token. Header `x-mock-user` không còn được tin.
+- `/governance` (vai trò `tide-realm-admin`): đổi vai trò là change request, chỉ có hiệu lực khi đủ quorum `max(1, floor(0,7 × số admin))` (3 admin → 2 chữ ký). Một admin không thể tự cấp quyền giải ngân cho mình.
+- Chi tiết và cách chuyển sang TideCloak thật: `docs/TIDE_INTEGRATION.md`.
+
+
+## Phần công khai & người dân (Khai) — 22/10/2026
+
+- Song ngữ Việt/Anh (mặc định Việt), nút VI/EN trên header; dùng chung khóa `relief-language` với khu admin nên chọn một lần là đủ. Nội dung report giữ nguyên ngôn ngữ người viết.
+- `/` trang chủ (số liệu từ `/api/transparency`), `/campaigns` tìm kiếm + lọc, `/campaigns/:id` nội dung, tiến độ, các khoản chi công khai, ủng hộ gần đây (không có tên người ủng hộ).
+- Ủng hộ mô phỏng chỉ cho tài khoản người dân: chọn số tiền (tối thiểu 10.000 ₫) → màn xác nhận ghi rõ “mô phỏng” → biên lai `/donations/:id`; `/donations` lịch sử; `/me` tổng quan. Một idempotency key cho mỗi lần xác nhận nên bấm nhiều lần vẫn một biên lai.
+- `/reports` form report riêng tư: khu vực, nhu cầu (lưu dạng `food,water`), mức khẩn cấp STANDARD/URGENT, ảnh minh họa, kèm trạng thái và phản hồi của admin.
+- `/transparency` sổ công khai: tổng nhận/đã chi/khả dụng, theo chiến dịch, tiến trình từng khoản chi, từng khoản ủng hộ (chỉ số tiền và thời gian).
+- API: `GET /api/campaigns`, `GET /api/campaigns/:id` (404 cho nháp), `GET|POST /api/donations`, `GET /api/donations/:id` (của người khác → 404). Lớp `services/publicService.ts` chỉ gọi `publicCampaigns/recordDonation/ownDonations/transparency` của `reliefService`, không có store hay cách tính số dư riêng.
+- Ảnh là SVG minh họa tự vẽ (`public/photos/ATTRIBUTION.md`), luôn có nhãn “Ảnh minh họa”.
+
+
 ## TideCloak: kế hoạch và giới hạn
 
 Repo có SDK và adapter xác thực; `tidecloak.json` hiện trống. Mock mode không cung cấp bảo mật thực: header mock và base64 chỉ dùng phát triển.

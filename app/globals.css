@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
 }

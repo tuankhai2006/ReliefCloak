@@ -14,3 +14,8 @@ data/community.json.tmp
 data/relief.json
 data/relief.json.tmp
 data/relief.lock/
+tidecloak-data/
+data/sim-realm.json
+data/sim-realm.json.tmp
+data/sim-tide-key.json
+.tide-pack/

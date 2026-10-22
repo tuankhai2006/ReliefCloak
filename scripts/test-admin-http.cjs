@@ -1,8 +1,18 @@
 const assert = require('node:assert/strict')
 const base = process.env.RELIEF_TEST_URL
 if (!base || !/^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(base)) throw new Error('Set RELIEF_TEST_URL to an isolated local mock test server, e.g. http://127.0.0.1:3100')
+// Identity = a signed token from the simulated TideCloak login (lib/simTide.ts), cached per user.
+const tokens = {}
+async function tokenFor(user) {
+  if (!tokens[user]) {
+    const r = await fetch(base + '/api/sim-tide/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: user }) })
+    assert.equal(r.status, 200, 'sim-tide login ' + user)
+    tokens[user] = (await r.json()).accessToken
+  }
+  return tokens[user]
+}
 async function call(url, user, method = 'GET', body, status = 200) {
-  const response = await fetch(base + url, { method, headers: { ...(user ? { 'x-mock-user': encodeURIComponent(JSON.stringify({ id: user, roles: ['org_admin', 'auditor', 'disburser'] })) } : {}), 'Content-Type': 'application/json' }, ...(body === undefined ? {} : { body: typeof body === 'string' ? body : JSON.stringify(body) }) })
+  const response = await fetch(base + url, { method, headers: { ...(user ? { Authorization: 'Bearer ' + (await tokenFor(user)) } : {}), 'Content-Type': 'application/json' }, ...(body === undefined ? {} : { body: typeof body === 'string' ? body : JSON.stringify(body) }) })
   const data = await response.json()
   assert.equal(response.status, status, `${method} ${url}: ${JSON.stringify(data)}`)
   return data

@@ -1,0 +1,47 @@
+import { defineMessages } from '@/lib/i18n'
+
+export const govMsg = defineMessages({
+  title: { vi: 'Quản trị quyền (IGA)', en: 'Access governance (IGA)' },
+  subtitle: {
+    vi: 'Mọi thay đổi vai trò là một change request. Nó chỉ có hiệu lực khi đủ số admin độc lập duyệt, kể cả khi người yêu cầu là admin.',
+    en: 'Every role change is a change request. It only takes effect once enough independent admins authorize it, even when the requester is an admin.',
+  },
+  simNote: {
+    vi: 'TideCloak mô phỏng: chữ ký bằng một khóa Ed25519 cục bộ thay cho mạng ORK của Tide. Luồng và quy tắc quorum giống TideCloak thật.',
+    en: 'Simulated TideCloak: tokens are signed with one local Ed25519 key instead of Tide’s ORK network. The flow and quorum rule match real TideCloak.',
+  },
+  quorum: { vi: 'Quorum: {t} / {n} realm admin', en: 'Quorum: {t} of {n} realm admins' },
+  quorumRule: { vi: 'Ngưỡng = max(1, floor(0,7 × số admin))', en: 'Threshold = max(1, floor(0.7 × admins))' },
+  newRequest: { vi: 'Đề xuất thay đổi vai trò', en: 'Propose a role change' },
+  user: { vi: 'Người dùng', en: 'User' },
+  role: { vi: 'Vai trò', en: 'Role' },
+  action: { vi: 'Thao tác', en: 'Action' },
+  grant: { vi: 'Cấp', en: 'Grant' },
+  revoke: { vi: 'Thu hồi', en: 'Revoke' },
+  submit: { vi: 'Tạo change request', en: 'Create change request' },
+  pending: { vi: 'Đang chờ duyệt', en: 'Pending' },
+  history: { vi: 'Đã xử lý', en: 'Decided' },
+  none: { vi: 'Không có.', en: 'None.' },
+  approve: { vi: 'Duyệt', en: 'Authorize' },
+  deny: { vi: 'Từ chối', en: 'Deny' },
+  approvals: { vi: 'Đã duyệt {a}/{t}', en: '{a}/{t} authorized' },
+  requestedBy: { vi: 'Đề xuất bởi {name}', en: 'Requested by {name}' },
+  APPROVED: { vi: 'Đã có hiệu lực', en: 'Committed' },
+  DENIED: { vi: 'Bị từ chối', en: 'Denied' },
+  PENDING: { vi: 'Chờ quorum', en: 'Awaiting quorum' },
+  GRANT_ROLES: { vi: 'Cấp', en: 'Grant' },
+  REVOKE_ROLES: { vi: 'Thu hồi', en: 'Revoke' },
+  accounts: { vi: 'Tài khoản và vai trò hiện tại', en: 'Accounts and current roles' },
+  refreshHint: {
+    vi: 'Vai trò nằm trong token đã ký. Sau khi thay đổi có hiệu lực, người dùng đó cần đăng nhập lại để nhận token mới.',
+    en: 'Roles live in the signed token. After a change commits, that user signs in again to receive a new token.',
+  },
+  notAdmin: {
+    vi: 'Chỉ tài khoản có vai trò tide-realm-admin mới vào được trang này.',
+    en: 'Only accounts with the tide-realm-admin role can open this page.',
+  },
+  ALREADY_AUTHORIZED: { vi: 'Bạn đã duyệt yêu cầu này rồi.', en: 'You already authorized this request.' },
+  ALREADY_PENDING: { vi: 'Đã có yêu cầu đang chờ cho vai trò này.', en: 'A request for this role is already pending.' },
+  NO_CHANGE: { vi: 'Người dùng đã ở đúng trạng thái này.', en: 'The user already has that state.' },
+  NOT_PENDING: { vi: 'Yêu cầu đã được xử lý.', en: 'This request was already decided.' },
+})

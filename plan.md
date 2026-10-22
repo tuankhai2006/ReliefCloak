@@ -42,7 +42,7 @@ These items already exist; do not treat them as new work or as evidence of live 
 - [x] Community service tests and successful mock production build.
 - [x] Development/build scripts use webpack after local Turbopack failures.
 - [x] Database tampering endpoint restricted to local mock development.
-- [ ] Full visual design and bilingual interface.
+- [x] Full visual design and bilingual interface.
 - [ ] Campaign lifecycle, simulated donations, and complete admin dashboards.
 - [ ] Live TideCloak realm and verified governance demonstration.
 - [ ] Tide-enforced authorization for individual disbursements.
@@ -309,15 +309,15 @@ Tide environment investigation starts in M1, not after the UI is finished. Recor
 
 ### Khai
 
-- [ ] K1 — Shared UI kit and public/user layouts.
-- [ ] K2 — Vietnamese/English localization and switcher.
-- [ ] K3 — Home page and locally bundled campaign imagery.
-- [ ] K4 — Campaign listing/detail and public read APIs.
-- [ ] K5 — Resident dashboard, report form/history, and resident APIs.
-- [ ] K6 — Simulated donation API with validation and idempotency.
-- [ ] K7 — Donation confirmation, receipts, and history.
-- [ ] K8 — Public transparency UI.
-- [ ] K9 — Responsive/accessibility pass and user-flow verification.
+- [x] K1 — Shared UI kit and public/user layouts.
+- [x] K2 — Vietnamese/English localization and switcher.
+- [x] K3 — Home page and locally bundled campaign imagery.
+- [x] K4 — Campaign listing/detail and public read APIs.
+- [x] K5 — Resident dashboard, report form/history, and resident APIs.
+- [x] K6 — Simulated donation API with validation and idempotency.
+- [x] K7 — Donation confirmation, receipts, and history.
+- [x] K8 — Public transparency UI.
+- [x] K9 — Responsive/accessibility pass and user-flow verification.
 
 ### Coding agent
 
@@ -334,7 +334,7 @@ Tide environment investigation starts in M1, not after the UI is finished. Recor
 
 ### Shared integration
 
-- [ ] S1 — Confirm API/type contract commit and file ownership.
+- [x] S1 — Confirm API/type contract commit and file ownership. Khai builds on `docs/ADMIN_HANDOFF.md` (main `c7c632a`); earlier parallel model `2889918` discarded.
 - [ ] S2 — Merge M2 and run report → campaign together.
 - [ ] S3 — Merge M3 and run donation → payout together.
 - [ ] S4 — Verify language switching and mobile layouts across both areas.
@@ -343,19 +343,19 @@ Tide environment investigation starts in M1, not after the UI is finished. Recor
 
 ## 14. Acceptance checklist
 
-- [ ] A resident submits a report and sees it after refresh.
-- [ ] Another resident cannot read that private report through UI or API.
+- [x] A resident submits a report and sees it after refresh.
+- [x] Another resident cannot read that private report through UI or API.
 - [ ] An admin reviews the report and publishes a separately written campaign.
 - [ ] A non-admin cannot publish, including by directly calling the API.
-- [ ] Guests see only published public campaign data.
-- [ ] A donor receives exactly one simulated receipt for a repeated request.
-- [ ] Invalid donation amounts and donations to closed campaigns are rejected.
+- [x] Guests see only published public campaign data.
+- [x] A donor receives exactly one simulated receipt for a repeated request.
+- [x] Invalid donation amounts and donations to closed campaigns are rejected.
 - [ ] An admin proposes a payout without being able to self-audit it.
 - [ ] An auditor can approve/reject but cannot execute without the correct role and independent identity.
 - [ ] An officer cannot execute a pending/rejected proposal.
 - [ ] An approved payout cannot execute twice or exceed available funds.
 - [ ] The public ledger updates without revealing private report content or sensitive recipient details.
-- [ ] Language preference persists and the interface works on mobile.
+- [x] Language preference persists and the interface works on mobile.
 - [ ] Loading, empty, error, and success states exist for main workflows.
 - [ ] Type checking, feature tests, production build, and manual walkthrough pass after integration.
 - [ ] The demo clearly distinguishes mock payments, application approvals, and verified live Tide operations.
@@ -380,6 +380,8 @@ Before handing off:
 | 2026-10-22 | Planning | Shared implementation plan created | Matches agreed scope and proposed vertical ownership | Confirm deadline and M1 contract commit before parallel feature work |
 | 2026-10-22 | Coding agent | A1–A7, A9–A10 on `feat/admin-governance`; handoff in `docs/ADMIN_HANDOFF.md` | Community/governance tests, production build, isolated HTTP end-to-end flow | Khai's public/donation route integration, human visual review; A8 in progress |
 | 2026-10-22 | Coding agent + user | A8: local Tide container and `reliefcloak` realm created; IGA enabled | Master discovery returned 200; realm setup returned 200; IGA enabled | Waiting for first administrator enrollment; real login, multiple independent admins and quorum demonstration not yet verified |
+| 2026-10-22 | Khai (coding agent on Khai's track) | K1–K9 on `feat/khai-public-donations`, rebuilt on main `c7c632a` (replaces `feat/public-user-donations`, which was based on the discarded `2889918` model) | `tsc --noEmit`, `npm test` (community + governance + new `test:public`), production build, HTTP smoke (report privacy, public allowlist, staff cannot donate), browser: donate double-click → one receipt, VI/EN shared with admin via `relief-language`, 375px no overflow on public/resident pages and `/admin` | Campaign image allowlist in `reliefService` still only accepts flood-1/flood-2 (4 new illustrations available for reports/hero; agent to extend if wanted); A8 live Tide pending |
+| 2026-10-22 | Khai (coding agent) | Simulated TideCloak on `feat/khai-public-donations`: EdDSA-signed Tide-shaped tokens verified server-side (x-mock-user no longer trusted), client-role `tide-realm-admin`, simulated IGA change requests with quorum max(1, floor(0.7N)) and `/governance` UI; plan from Tide MCP (`iga-admin-governance`), mapping in `docs/TIDE_INTEGRATION.md` | `npm test` incl. new `test:sim-tide` (forged/alg-none/expired tokens, self-grant blocked below quorum), `test-admin-http` against isolated server with signed tokens, spoofed header 401, browser: self-grant stays 1/2 until second admin | Live network under heavy load: real realm half-bootstrapped (`setUpTideRealm` 200) in local `tidecloak-data/`; switch-over steps in `docs/TIDE_INTEGRATION.md` |
 
 ### Blockers / decisions
 
